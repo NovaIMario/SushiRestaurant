@@ -1,0 +1,102 @@
+{% extends "admin/_layout.html" %}
+{% set section = "menu" %}
+
+{% macro item_form(i, cat) %}
+<form method="post" action="/admin/menu/item" class="item-form">
+  <input type="hidden" name="id" value="{{ i.id if i else 0 }}">
+  <div class="row2">
+    <label>Name (English) 英文名 <input name="name_en" value="{{ i.name_en if i else '' }}" required maxlength="120"></label>
+    <label>Name (Chinese) 中文名 <input name="name_zh" value="{{ i.name_zh if i else '' }}" maxlength="120"></label>
+  </div>
+  <div class="row2">
+    <label>Description (English) 英文介绍 <textarea name="desc_en" rows="2" maxlength="500">{{ i.desc_en if i else '' }}</textarea></label>
+    <label>Description (Chinese) 中文介绍 <textarea name="desc_zh" rows="2" maxlength="500">{{ i.desc_zh if i else '' }}</textarea></label>
+  </div>
+  <div class="row4">
+    <label>Price 价格 (£) <input name="price" inputmode="decimal" value="{{ '%.2f'|format(i.price_pence / 100) if i else '' }}" placeholder="12.50" required></label>
+    <label>Section 分类
+      <select name="category_id">{% for c in categories %}<option value="{{ c.id }}" {% if c.id == cat.id %}selected{% endif %}>{{ c.name_en }}</option>{% endfor %}</select>
+    </label>
+    <label>Spicy 辣度
+      <select name="spicy">{% for n in range(4) %}<option value="{{ n }}" {% if i and i.spicy == n %}selected{% endif %}>{{ ["None 不辣", "🌶", "🌶🌶", "🌶🌶🌶"][n] }}</option>{% endfor %}</select>
+    </label>
+    <label>Order 排序 <input name="sort" type="number" value="{{ i.sort if i else 99 }}"></label>
+  </div>
+  <div class="checks">
+    <label class="check"><input type="checkbox" name="vegetarian" value="1" {% if i and i.vegetarian %}checked{% endif %}> Vegetarian 素食</label>
+    <label class="check"><input type="checkbox" name="available" value="1" {% if not i or i.available %}checked{% endif %}> Available today 今日供应</label>
+  </div>
+  <fieldset class="allergen-picker">
+    <legend>Allergens 过敏原 <small>(tick every one the dish contains 请勾选所有含有的过敏原)</small></legend>
+    {% for key, (en, zh) in allergens.items() %}
+    <label class="check"><input type="checkbox" name="allergens" value="{{ key }}" {% if i and key in i.allergen_list %}checked{% endif %}> {{ en }} {{ zh }}</label>
+    {% endfor %}
+  </fieldset>
+  <div class="form-actions">
+    <button class="btn btn-small" type="submit">{{ "Save 保存" if i else "Add dish 添加菜品" }}</button>
+  </div>
+</form>
+{% if i %}
+<form method="post" action="/admin/menu/item/{{ i.id }}/delete" class="delete-form" data-confirm="Delete {{ i.name_en }}? 确定删除？">
+  <button class="link-button danger">Delete dish 删除菜品</button>
+</form>
+{% endif %}
+{% endmacro %}
+
+{% block content %}
+<section class="section">
+  <div class="wrap">
+    <div class="admin-head">
+      <h1>Menu 菜单</h1>
+      {% if saved %}<span class="saved" role="status">Saved ✓ 已保存</span>{% endif %}
+    </div>
+    <p class="muted">Click a dish to edit it. Changes show on the website straight away. 点击菜品即可编辑，保存后网站立即更新。</p>
+
+    {% for c in categories %}
+    <div class="admin-card" id="cat{{ c.id }}">
+      <form method="post" action="/admin/menu/category" class="cat-form">
+        <input type="hidden" name="id" value="{{ c.id }}">
+        <label>Section 分类 <input name="name_en" value="{{ c.name_en }}" required maxlength="80"></label>
+        <label>中文 <input name="name_zh" value="{{ c.name_zh }}" maxlength="80"></label>
+        <label class="short">Order 排序 <input name="sort" type="number" value="{{ c.sort }}"></label>
+        <button class="btn btn-small btn-plain">Save 保存</button>
+      </form>
+
+      {% for i in c.items %}
+      <details class="item" id="item{{ i.id }}">
+        <summary>
+          <span>{{ i.name_en }}{% if i.name_zh %} · {{ i.name_zh }}{% endif %}</span>
+          <span class="item-meta">
+            {% if not i.available %}<span class="badge declined">Off 停售</span>{% endif %}
+            {% if not i.allergen_list %}<span class="badge warn" title="No allergens recorded">Allergens? 过敏原?</span>{% endif %}
+            {{ i.price_pence | money }}
+          </span>
+        </summary>
+        {{ item_form(i, c) }}
+      </details>
+      {% endfor %}
+
+      <details class="item add">
+        <summary>+ Add a dish to {{ c.name_en }} 添加菜品</summary>
+        {{ item_form(None, c) }}
+      </details>
+
+      <form method="post" action="/admin/menu/category/{{ c.id }}/delete" class="delete-form"
+            data-confirm="Delete the whole {{ c.name_en }} section and all its dishes? 确定删除整个分类及其所有菜品？">
+        <button class="link-button danger">Delete section 删除分类</button>
+      </form>
+    </div>
+    {% endfor %}
+
+    <div class="admin-card">
+      <h2>Add a section 添加分类</h2>
+      <form method="post" action="/admin/menu/category" class="cat-form">
+        <label>Section 分类 <input name="name_en" required maxlength="80" placeholder="Desserts"></label>
+        <label>中文 <input name="name_zh" maxlength="80" placeholder="甜品"></label>
+        <label class="short">Order 排序 <input name="sort" type="number" value="{{ categories|length }}"></label>
+        <button class="btn btn-small">Add 添加</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

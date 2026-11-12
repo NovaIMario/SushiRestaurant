@@ -1,0 +1,30 @@
+{# Drawn placeholder until real photos arrive. Usage: {% set kind = "sushi" %}{% include "_photo.html" %} #}
+<figure class="photo photo-{{ kind }}">
+  <svg viewBox="0 0 200 140" aria-hidden="true">
+    {% if kind == "sushi" %}
+      <ellipse cx="100" cy="104" rx="78" ry="12" class="ph-shadow"/>
+      <rect x="40" y="70" width="52" height="30" rx="14" class="ph-rice"/>
+      <path d="M36 74 q30 -26 60 0 q-4 8 -30 8 q-26 0 -30 -8z" class="ph-fish"/>
+      <path d="M48 66 l6 14 M62 62 l6 16 M76 63 l6 15" class="ph-line"/>
+      <rect x="108" y="70" width="52" height="30" rx="14" class="ph-rice"/>
+      <path d="M104 74 q30 -26 60 0 q-4 8 -30 8 q-26 0 -30 -8z" class="ph-fish2"/>
+      <rect x="128" y="68" width="10" height="34" class="ph-nori"/>
+    {% elif kind == "ramen" %}
+      <path d="M58 30 q4 -12 0 -22 M78 32 q4 -12 0 -22" class="ph-steam"/>
+      <path d="M150 20 L96 70 M160 26 L104 72" class="ph-chop"/>
+      <path d="M30 66 h140 q-6 46 -70 46 q-64 0 -70 -46z" class="ph-bowl"/>
+      <path d="M30 66 h140" class="ph-rim"/>
+      <circle cx="78" cy="62" r="11" class="ph-egg"/><circle cx="78" cy="62" r="5" class="ph-yolk"/>
+      <rect x="104" y="54" width="34" height="14" rx="4" class="ph-fish"/>
+      <path d="M44 86 h112" class="ph-gold"/>
+    {% else %}
+      <path d="M100 14 v14" class="ph-rim"/>
+      <ellipse cx="100" cy="72" rx="44" ry="44" class="ph-lantern"/>
+      <path d="M60 52 h80 M56 72 h88 M60 92 h80" class="ph-rib"/>
+      <rect x="80" y="26" width="40" height="8" rx="2" class="ph-cap"/>
+      <rect x="80" y="110" width="40" height="8" rx="2" class="ph-cap"/>
+      <text x="100" y="82" text-anchor="middle" class="ph-char">金</text>
+    {% endif %}
+  </svg>
+  <figcaption>{{ t("photo_soon") }}</figcaption>
+</figure>

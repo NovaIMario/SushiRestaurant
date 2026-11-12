@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ t("not_found") if not message else "Error" }} · {{ site.name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="wrap narrow center">
+    <div class="seal big-seal" aria-hidden="true">金</div>
+    <h1>{{ t("not_found") if not message else "Something went wrong" }}</h1>
+    <p class="lead">{{ message or t("not_found_text") }}</p>
+    <p><a class="btn" href="/{{ lang }}">{{ t("back_home") }}</a></p>
+  </div>
+</section>
+{% endblock %}

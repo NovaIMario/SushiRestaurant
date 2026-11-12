@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Admin 管理 · {{ site.name }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+{% block body_class %}admin{% endblock %}
+{% block header %}
+<header class="site-header admin-header">
+  <div class="wrap header-row">
+    <a class="brand" href="/admin"><span class="seal" aria-hidden="true">金</span><span class="brand-name">{{ site.name }} · Admin 管理</span></a>
+    {% if not hide_nav %}
+    <nav class="main-nav admin-nav" aria-label="Admin">
+      <a href="/admin" {% if section == "bookings" %}aria-current="page"{% endif %}>Bookings 预订</a>
+      <a href="/admin/menu" {% if section == "menu" %}aria-current="page"{% endif %}>Menu 菜单</a>
+      <a href="/admin/settings" {% if section == "settings" %}aria-current="page"{% endif %}>Details 信息</a>
+      <a href="/en" target="_blank">View site 查看网站 ↗</a>
+      <form method="post" action="/admin/logout"><button class="link-button">Log out 退出</button></form>
+    </nav>
+    {% endif %}
+  </div>
+</header>
+{% endblock %}
+{% block footer %}{% endblock %}
+{% block scripts %}
+<script>
+  // Ask before destructive admin actions (forms with data-confirm).
+  document.addEventListener("submit", e => {
+    const msg = e.target.dataset.confirm;
+    if (msg && !confirm(msg)) e.preventDefault();
+  });
+</script>
+{% endblock %}

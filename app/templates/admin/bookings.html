@@ -1,0 +1,51 @@
+{% extends "admin/_layout.html" %}
+{% set section = "bookings" %}
+{% block content %}
+{% set status_zh = {"new": "新", "confirmed": "已确认", "declined": "已拒绝", "cancelled": "已取消"} %}
+<section class="section">
+  <div class="wrap">
+    <div class="admin-head">
+      <h1>Bookings 预订 {% if new_count %}<span class="badge new">{{ new_count }} new 新</span>{% endif %}</h1>
+      <div class="tabs">
+        <a href="/admin?show=upcoming" {% if show != "past" %}aria-current="page"{% endif %}>Upcoming 即将到来</a>
+        <a href="/admin?show=past" {% if show == "past" %}aria-current="page"{% endif %}>Past 已过去</a>
+      </div>
+    </div>
+
+    {% if not bookings %}
+      <p class="empty">No bookings yet. 暂无预订。</p>
+    {% endif %}
+
+    {% for day, group in bookings | groupby("day") %}
+    <h2 class="day-head">{{ day.strftime("%A %d %B %Y") }}{% if day == today %} · Today 今天{% endif %}
+      <small>{{ group | rejectattr("status", "in", ["declined", "cancelled"]) | sum(attribute="party_size") }} guests 位</small></h2>
+    <div class="booking-list">
+      {% for b in group %}
+      <article class="booking status-{{ b.status }}" id="b{{ b.id }}">
+        <div class="b-main">
+          <div class="b-time">{{ b.at.strftime("%H:%M") }}</div>
+          <div>
+            <div class="b-name">{{ b.name }} <span class="b-party">× {{ b.party_size }}</span>
+              {% if b.kind == "private" %}<span class="badge private">Private 私人宴请</span>{% endif %}
+              <span class="badge {{ b.status }}">{{ b.status|capitalize }} {{ status_zh[b.status] }}</span>
+            </div>
+            <div class="b-contact"><a href="tel:{{ b.phone }}">{{ b.phone }}</a>{% if b.email %} · <a href="mailto:{{ b.email }}">{{ b.email }}</a>{% endif %}
+              · <span class="muted">#{{ b.id }} · {{ "中文" if b.lang == "zh" else "EN" }}</span></div>
+            {% if b.notes %}<p class="b-notes">{{ b.notes }}</p>{% endif %}
+          </div>
+        </div>
+        <div class="b-actions">
+          {% for st, label in [("confirmed", "Confirm 确认"), ("declined", "Decline 拒绝"), ("cancelled", "Cancel 取消"), ("new", "Reset 重置")] if st != b.status %}
+          <form method="post" action="/admin/bookings/{{ b.id }}/status">
+            <input type="hidden" name="status" value="{{ st }}"><input type="hidden" name="show" value="{{ show }}">
+            <button class="btn btn-small {{ 'btn-ok' if st == 'confirmed' else 'btn-plain' }}">{{ label }}</button>
+          </form>
+          {% endfor %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

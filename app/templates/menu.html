@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ t("menu_title") }} · {{ site.name }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <h1>{{ t("menu_title") }}</h1>
+    {% if categories %}
+    <nav class="chips" aria-label="{{ t('menu_title') }}">
+      {% for c in categories if c.items %}<a href="#cat{{ c.id }}">{{ pick(c, "name") }}</a>{% endfor %}
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section menu">
+  <div class="wrap">
+    <p class="allergen-notice" role="note">{{ t("allergen_notice") }}</p>
+    {% for c in categories if c.items %}
+    <div class="menu-cat" id="cat{{ c.id }}">
+      <h2>{{ pick(c, "name") }}</h2>
+      <ul class="dishes">
+        {% for i in c.items %}
+        <li class="dish {% if not i.available %}unavailable{% endif %}">
+          <div class="dish-line">
+            <span class="dish-name">{{ pick(i, "name") }}</span>
+            <span class="leader" aria-hidden="true"></span>
+            <span class="price">{{ i.price_pence | money }}</span>
+          </div>
+          {% if pick(i, "desc") %}<p class="dish-desc">{{ pick(i, "desc") }}</p>{% endif %}
+          <div class="tags">
+            {% if not i.available %}<span class="tag muted">{{ t("sold_out") }}</span>{% endif %}
+            {% if i.vegetarian %}<span class="tag veg">{{ t("vegetarian") }}</span>{% endif %}
+            {% if i.spicy %}<span class="tag spicy" title="{{ t('spicy') }}">{{ "🌶" * i.spicy }} <span class="sr">{{ t("spicy") }}</span></span>{% endif %}
+            {% if i.allergen_list %}
+              <span class="tag allergen"><b>{{ t("allergens") }}:</b> {% for a in i.allergen_list %}{{ allergen_names[a] }}{% if not loop.last %}, {% endif %}{% endfor %}</span>
+            {% else %}
+              <span class="tag ask">{{ t("allergen_ask") }}</span>
+            {% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+    <div class="menu-cta">
+      <a class="btn" href="/{{ lang }}/book">{{ t("book_table") }}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

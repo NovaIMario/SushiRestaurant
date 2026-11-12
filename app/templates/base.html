@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="{{ 'zh-Hans' if lang == 'zh' else 'en-GB' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site.name }} · {{ site.tagline }}{% endblock %}</title>
+  <meta name="description" content="{{ site.tagline }}">
+  <meta name="theme-color" content="#7a1418">
+  <link rel="icon" href="/static/favicon.svg?v={{ v }}" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
+  {% if page not in ("error", "admin") and not request.url.path.startswith("/admin") %}
+  <link rel="alternate" hreflang="{{ 'en' if lang == 'zh' else 'zh-Hans' }}" href="{{ switch_url }}">
+  {% endif %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Serif+SC:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/static/style.css?v={{ v }}">
+  {% block head %}{% endblock %}
+</head>
+<body class="lang-{{ lang }} {% block body_class %}{% endblock %}">
+{% block header %}
+  {% if site.notice %}<div class="notice">{{ site.notice }}</div>{% endif %}
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="/{{ lang }}" aria-label="{{ site.name }}">
+        <span class="seal" aria-hidden="true">金</span>
+        <span class="brand-name">{{ site.name }}</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/{{ lang }}/menu" {% if page == "menu" %}aria-current="page"{% endif %}>{{ t("nav_menu") }}</a>
+        <a href="/{{ lang }}#visit">{{ t("nav_visit") }}</a>
+        <a href="/{{ lang }}/book" class="btn btn-small" {% if page == "book" %}aria-current="page"{% endif %}>{{ t("nav_book") }}</a>
+        <a href="{{ switch_url }}" class="lang-switch" lang="{{ 'en' if lang == 'zh' else 'zh-Hans' }}">{{ t("switch_to") }}</a>
+      </nav>
+    </div>
+  </header>
+{% endblock %}
+  <main>{% block content %}{% endblock %}</main>
+{% block footer %}
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <div class="brand footer-brand"><span class="seal" aria-hidden="true">金</span><span class="brand-name">{{ site.name }}</span></div>
+        <p>{{ site.tagline }}</p>
+      </div>
+      <div>
+        <h3>{{ t("find_us") }}</h3>
+        <p>{{ site.address }}</p>
+        <p><a href="{{ phone_href }}">{{ site.phone }}</a>{% if site.email %}<br><a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}</p>
+      </div>
+      {% if page != "home" %}{# the home page already shows hours in "Visit us" #}
+      <div>
+        <h3>{{ t("opening_hours") }}</h3>
+        {% include "_hours.html" %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="wrap footer-bottom">
+      <span>© {{ year }} {{ site.name }}. {{ t("footer_rights") }}</span>
+      <a href="/{{ lang }}/privacy">{{ t("privacy") }}</a>
+    </div>
+  </footer>
+{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

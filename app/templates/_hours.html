@@ -1,0 +1,8 @@
+<table class="hours">
+  {% for d in days %}
+  <tr {% if d == today_key %}class="today"{% endif %}>
+    <th scope="row">{{ day_names[d] }}</th>
+    <td>{% if hours[d] %}{% for a, b in hours[d] %}{{ a }}–{{ b }}{% if not loop.last %}<span class="sep">, </span>{% endif %}{% endfor %}{% else %}<span class="closed">{{ t("closed") }}</span>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>

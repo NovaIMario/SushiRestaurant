@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">{{ "寿司 · 拉面 · 爱丁堡" if lang == "zh" else "Sushi · Ramen · Edinburgh" }}</p>
+      <h1>{{ site.name }}</h1>
+      <p class="lead">{{ site.tagline }}</p>
+      <div class="actions">
+        <a class="btn" href="/{{ lang }}/book">{{ t("book_table") }}</a>
+        <a class="btn btn-ghost" href="/{{ lang }}/menu">{{ t("see_menu") }}</a>
+      </div>
+      <p class="hero-call"><a href="{{ phone_href }}">{{ t("call_us") }}: {{ site.phone }}</a></p>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="sun"></div>
+      <div class="hero-seal">金</div>
+    </div>
+  </div>
+  <div class="wave" aria-hidden="true"></div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2 class="section-title">{{ t("highlights") }}</h2>
+    <div class="cards">
+      {% for kind, title, text, href in [("sushi", t("hl_sushi"), t("hl_sushi_text"), "/" ~ lang ~ "/menu"),
+                                          ("ramen", t("hl_ramen"), t("hl_ramen_text"), "/" ~ lang ~ "/menu"),
+                                          ("lantern", t("hl_private"), t("hl_private_text"), "/" ~ lang ~ "/book?kind=private")] %}
+      <a class="card" href="{{ href }}">
+        {% include "_photo.html" %}
+        <h3>{{ title }}</h3>
+        <p>{{ text }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section story">
+  <div class="wrap story-grid">
+    <div>
+      <h2 class="section-title left">{{ t("our_story") }}</h2>
+      <p class="story-text">{{ site.story }}</p>
+    </div>
+    {% set kind = "lantern" %}{% include "_photo.html" %}
+  </div>
+</section>
+
+<section class="section visit" id="visit">
+  <div class="wrap visit-grid">
+    <div class="visit-card">
+      <h2>{{ t("find_us") }}</h2>
+      <p class="big">{{ site.address }}</p>
+      <p><a href="{{ phone_href }}">{{ site.phone }}</a>{% if site.email %} · <a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}</p>
+      <p><a class="btn btn-small" href="{{ maps_url }}" target="_blank" rel="noopener">{{ t("open_in_maps") }}</a></p>
+    </div>
+    <div class="visit-card">
+      <h2>{{ t("opening_hours") }}</h2>
+      {% include "_hours.html" %}
+    </div>
+  </div>
+</section>
+{% endblock %}

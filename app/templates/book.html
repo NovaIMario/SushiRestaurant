@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ t("book_title") }} · {{ site.name }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <h1>{{ t("book_title") }}</h1>
+    <p class="lead">{{ t("book_intro") }}</p>
+    <p><a class="phone-pill" href="{{ phone_href }}">☎ {{ site.phone }}</a></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap narrow">
+    {% if form.errors %}
+    <div class="form-errors" role="alert">
+      <strong>{{ t("err_fix") }}</strong>
+      <ul>{% for e in form.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/{{ lang }}/book" class="booking-form" id="booking-form" novalidate>
+      <fieldset class="kind">
+        <legend>{{ t("kind") }}</legend>
+        <label class="kind-option"><input type="radio" name="kind" value="table" {% if form.kind != "private" %}checked{% endif %}><span>{{ t("kind_table") }}</span></label>
+        <label class="kind-option"><input type="radio" name="kind" value="private" {% if form.kind == "private" %}checked{% endif %}><span>{{ t("kind_private") }}</span></label>
+      </fieldset>
+      <p class="hint" id="private-hint" {% if form.kind != "private" %}hidden{% endif %}>{{ t("private_hint") }}</p>
+
+      <div class="row3">
+        <label>{{ t("date") }}
+          <input type="date" name="day" id="day" value="{{ form.day }}" min="{{ min_date }}" max="{{ max_date }}" required>
+        </label>
+        <label>{{ t("time") }}
+          <select name="at" id="at" data-selected="{{ form.at }}" required>
+            <option value="">{{ t("pick_date_first") }}</option>
+          </select>
+        </label>
+        <label>{{ t("party") }}
+          <select name="party_size" id="party" data-selected="{{ form.party_size }}" required></select>
+        </label>
+      </div>
+
+      <div class="row2">
+        <label>{{ t("name") }}
+          <input name="name" value="{{ form.name }}" autocomplete="name" maxlength="80" required>
+        </label>
+        <label>{{ t("phone") }}
+          <input name="phone" type="tel" value="{{ form.phone }}" autocomplete="tel" maxlength="30" required>
+        </label>
+      </div>
+      <label>{{ t("email") }}
+        <input name="email" type="email" value="{{ form.email }}" autocomplete="email" maxlength="120">
+      </label>
+      <label>{{ t("notes") }}
+        <textarea name="notes" rows="3" maxlength="1000" placeholder="{{ t('notes_ph') }}">{{ form.notes }}</textarea>
+      </label>
+
+      {# Honeypot: hidden from people, filled in by spam bots. #}
+      <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <label class="check">
+        <input type="checkbox" name="consent" value="1" {% if form.consent %}checked{% endif %} required>
+        <span>{{ t("consent", name=site.name) }} <a href="/{{ lang }}/privacy" target="_blank">{{ t("privacy") }}</a></span>
+      </label>
+
+      <button class="btn btn-wide" type="submit">{{ t("send_request") }}</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  window.BOOKING = {
+    slots: {{ slots_json | safe }},
+    limits: {{ party_limits | tojson }},
+    closedText: {{ t("no_times") | tojson }},
+    pickText: {{ t("pick_date_first") | tojson }},
+    today: {{ min_date | tojson }}
+  };
+</script>
+<script src="/static/book.js?v={{ v }}"></script>
+{% endblock %}

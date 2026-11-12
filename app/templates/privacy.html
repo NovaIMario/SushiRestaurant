@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ t("privacy") }} · {{ site.name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="wrap narrow prose">
+    <h1>{{ t("privacy") }}</h1>
+    <p class="placeholder-note">{{ "这是一份草稿模板，正式开业前请核对。" if lang == "zh" else "Draft template — check it before the restaurant opens." }}</p>
+    {% if lang == "zh" %}
+    <p>当您提交预订申请时，{{ site.name }} 会收集您的姓名、电话、电子邮箱（如填写）、预订日期、时间、人数以及备注。</p>
+    <p>我们仅将这些信息用于处理和确认您的预订，以及在需要时就预订与您联系。我们不会出售您的信息，也不会用于营销。</p>
+    <p>预订信息在用餐日期后保留不超过 12 个月，之后删除。您可以随时联系我们，查看、更正或删除您的信息。</p>
+    <p>联系方式：<a href="{{ phone_href }}">{{ site.phone }}</a>{% if site.email %}，<a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}。</p>
+    <p>本网站仅使用一个记住语言选择的 Cookie，不使用广告或追踪 Cookie。</p>
+    {% else %}
+    <p>When you send a booking request, {{ site.name }} collects your name, phone number, email address (if given), the date, time and party size, and any notes you add.</p>
+    <p>We use this only to handle and confirm your booking and to contact you about it. We never sell it or use it for marketing.</p>
+    <p>Booking details are kept for no more than 12 months after the booking date, then deleted. You can contact us at any time to see, correct or delete your details.</p>
+    <p>Contact: <a href="{{ phone_href }}">{{ site.phone }}</a>{% if site.email %}, <a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}.</p>
+    <p>This site uses a single cookie to remember your language. There are no advertising or tracking cookies.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

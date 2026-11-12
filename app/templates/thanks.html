@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ t("thanks_title") }} · {{ site.name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="wrap narrow center">
+    <div class="seal big-seal" aria-hidden="true">金</div>
+    <h1>{{ t("thanks_title") }}</h1>
+    {% if booking %}
+    <p class="lead">{{ t("thanks_text", party=booking.party_size, date=booking.day.strftime("%d/%m/%Y"), time=booking.at.strftime("%H:%M")) }}</p>
+    {% else %}
+    <p class="lead">{{ t("book_intro") }}</p>
+    {% endif %}
+    <p><a class="phone-pill" href="{{ phone_href }}">☎ {{ site.phone }}</a></p>
+    <p><a class="btn btn-ghost-dark" href="/{{ lang }}">{{ t("back_home") }}</a></p>
+  </div>
+</section>
+{% endblock %}

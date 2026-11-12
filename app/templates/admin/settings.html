@@ -1,0 +1,57 @@
+{% extends "admin/_layout.html" %}
+{% set section = "settings" %}
+{% block content %}
+{% set fields = [
+  ("name", "Restaurant name 餐厅名称", False, True),
+  ("tagline", "Tagline 标语", False, True),
+  ("notice", "Banner at the top (leave empty to hide) 顶部通知（留空则隐藏）", False, True),
+  ("story", "Our story 我们的故事", True, True),
+  ("address", "Address 地址", False, True),
+  ("phone", "Phone 电话", False, False),
+  ("email", "Email 邮箱", False, False),
+] %}
+<section class="section">
+  <div class="wrap">
+    <div class="admin-head">
+      <h1>Details 信息</h1>
+      {% if saved %}<span class="saved" role="status">Saved ✓ 已保存</span>{% endif %}
+    </div>
+    {% if error %}<p class="form-errors" role="alert">{{ error }}</p>{% endif %}
+
+    <form method="post" action="/admin/settings" class="booking-form">
+      <div class="admin-card">
+        {% for key, label, multiline, bilingual in fields if key in st %}
+        <div class="setting">
+          <h3>{{ label }}</h3>
+          <div class="{{ 'row2' if bilingual else '' }}">
+            <label>English
+              {% if multiline %}<textarea name="{{ key }}_en" rows="5">{{ st[key].value_en }}</textarea>
+              {% else %}<input name="{{ key }}_en" value="{{ st[key].value_en }}">{% endif %}
+            </label>
+            {% if bilingual %}
+            <label>中文 <small>(empty = use English 留空则显示英文)</small>
+              {% if multiline %}<textarea name="{{ key }}_zh" rows="5">{{ st[key].value_zh }}</textarea>
+              {% else %}<input name="{{ key }}_zh" value="{{ st[key].value_zh }}">{% endif %}
+            </label>
+            {% else %}<input type="hidden" name="{{ key }}_zh" value="">{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="admin-card">
+        <h2>Opening hours 营业时间</h2>
+        <p class="muted">Write times like <code>12:00-14:30, 17:30-22:00</code>. Leave empty for closed. Bookings are offered until an hour before closing.<br>
+          格式如 <code>12:00-14:30, 17:30-22:00</code>，留空表示休息。最晚可预订时间为打烊前一小时。</p>
+        <div class="hours-edit">
+          {% for d in days %}
+          <label>{{ day_names[d] }} <input name="hours_{{ d }}" value="{{ hours_text[d] }}" placeholder="Closed 休息"></label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <button class="btn" type="submit">Save all 全部保存</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
