@@ -4,6 +4,8 @@ A bilingual (English / 中文) website for a Japanese restaurant in Edinburgh: h
 booking requests (tables and private dining), and an admin area where the owners edit everything
 without touching code.
 
+**Live:** https://sushirestaurant-61sj.onrender.com ([English](https://sushirestaurant-61sj.onrender.com/en) · [中文](https://sushirestaurant-61sj.onrender.com/zh))
+
 **Status:** pre-opening. The name, address, phone, menu, prices, hours and photos are all
 placeholders and can be changed in the admin page.
 
